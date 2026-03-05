@@ -54,7 +54,7 @@ exports.handler = async (event) => {
         'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online', // ウェブ検索付きモデル
+        model: 'sonar', // ウェブ検索付きモデル
         messages: [
           {
             role: 'system',
