@@ -1,5 +1,5 @@
 [build]
-  publish = "."
+  publish = "rosso_dashboard.html"
   functions = "netlify/functions"
 
 [[redirects]]
