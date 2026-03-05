@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>銀座ロッソ 福岡店｜インスタ投稿ダッシュボード</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brown: #1A1410;
+    --brown-mid: #2C2018;
+    --brown-light: #3D2E1E;
+    --gold: #C9A96E;
+    --gold-light: #E8D5A3;
+    --rose: #C0392B;
+    --rose-light: #E74C3C;
+    --text: #F0E8D8;
+    --text-dim: #A89880;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--brown);
+    color: var(--text);
+    font-family: 'Noto Serif JP', serif;
+    min-height: 100vh;
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(201,169,110,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(192,57,43,0.04) 0%, transparent 50%);
+  }
+  header {
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(26,20,16,0.9);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo-en { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 0.3em; color: var(--gold); }
+  .logo-ja { font-size: 11px; letter-spacing: 0.2em; color: var(--text-dim); margin-top: 2px; }
+  .header-badge {
+    background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(201,169,110,0.05));
+    border: 1px solid rgba(201,169,110,0.3);
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); display: inline-block; transition: all 0.3s; }
+  .status-dot.ok { background: #2ECC71; box-shadow: 0 0 8px rgba(46,204,113,0.5); }
+  .status-dot.error { background: var(--rose); }
+  main { max-width: 1200px; margin: 0 auto; padding: 40px; display: grid; gap: 28px; }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(201,169,110,0.4), transparent); }
+  .card {
+    background: var(--brown-mid);
+    border: 1px solid rgba(201,169,110,0.15);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+  .card:hover { border-color: rgba(201,169,110,0.28); }
+  /* API section */
+  #apiSection {
+    background: linear-gradient(135deg, var(--brown-mid), var(--brown-light));
+    border: 1px solid rgba(201,169,110,0.3);
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .api-row { display: flex; gap: 12px; align-items: center; }
+  .api-input {
+    flex: 1;
+    background: rgba(26,20,16,0.7);
+    border: 1px solid rgba(201,169,110,0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .api-input:focus { border-color: var(--gold); }
+  .api-input::placeholder { color: var(--text-dim); }
+  .btn {
+    padding: 11px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    transition: all 0.25s;
+    white-space: nowrap;
+  }
+  .btn-gold { background: linear-gradient(135deg, var(--gold), #B8923E); color: var(--brown); font-weight: 500; }
+  .btn-gold:hover { background: linear-gradient(135deg, var(--gold-light), var(--gold)); transform: translateY(-1px); box-shadow: 0 4px 18px rgba(201,169,110,0.3); }
+  .btn-outline { background: transparent; border: 1px solid rgba(201,169,110,0.35); color: var(--gold); }
+  .btn-outline:hover { background: rgba(201,169,110,0.08); border-color: var(--gold); }
+  .btn-rose { background: linear-gradient(135deg, var(--rose), #922B21); color: white; }
+  .btn-rose:hover { background: linear-gradient(135deg, var(--rose-light), var(--rose)); transform: translateY(-1px); box-shadow: 0 4px 18px rgba(192,57,43,0.3); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  /* Upload */
+  .upload-zone {
+    border: 2px dashed rgba(201,169,110,0.25);
+    border-radius: 10px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(26,20,16,0.4);
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .upload-zone:hover, .upload-zone.dragover { border-color: var(--gold); background: rgba(201,169,110,0.04); }
+  .upload-icon { font-size: 28px; opacity: 0.6; }
+  .upload-label { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+  .upload-label span { color: var(--gold); text-decoration: underline; cursor: pointer; }
+  .image-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+  .image-thumb { aspect-ratio: 1; border-radius: 7px; overflow: hidden; border: 1px solid rgba(201,169,110,0.2); cursor: pointer; position: relative; transition: border-color 0.2s; }
+  .image-thumb:hover { border-color: rgba(201,169,110,0.5); }
+  .image-thumb.selected { border-color: var(--gold); box-shadow: 0 0 10px rgba(201,169,110,0.35); }
+  .image-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .remove-btn { position: absolute; top: 3px; right: 3px; background: rgba(192,57,43,0.85); color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; cursor: pointer; opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
+  .image-thumb:hover .remove-btn { opacity: 1; }
+  /* Form */
+  .form-group { margin-bottom: 14px; }
+  label { display: block; font-size: 11px; letter-spacing: 0.15em; color: var(--gold); margin-bottom: 7px; text-transform: uppercase; }
+  textarea, select {
+    width: 100%;
+    background: rgba(26,20,16,0.6);
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s;
+    line-height: 1.7;
+  }
+  textarea:focus, select:focus { border-color: var(--gold); }
+  textarea::placeholder { color: var(--text-dim); }
+  select { cursor: pointer; -webkit-appearance: none; }
+  textarea { resize: vertical; }
+  .tag-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+  .tag-pill { background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.2); color: var(--text-dim); padding: 4px 12px; border-radius: 14px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+  .tag-pill.active { background: rgba(201,169,110,0.18); border-color: var(--gold); color: var(--gold); }
+  /* Generate */
+  .gen-btn { padding: 15px 40px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(26,20,16,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* Results */
+  .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .result-card {
+    background: rgba(26,20,16,0.5);
+    border: 1px solid rgba(201,169,110,0.15);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation: fadeUp 0.45s ease both;
+  }
+  .result-card:nth-child(2) { animation-delay: 0.1s; }
+  .result-card:nth-child(3) { animation-delay: 0.2s; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .result-card:hover { border-color: rgba(201,169,110,0.3); }
+  .result-label { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); letter-spacing: 0.18em; }
+  .result-text { font-size: 12.5px; line-height: 1.95; color: var(--text); flex: 1; white-space: pre-wrap; }
+  .result-actions { display: flex; gap: 8px; }
+  .result-actions .btn { flex: 1; padding: 8px; font-size: 12px; }
+  /* Stock */
+  .stock-list { display: flex; flex-direction: column; gap: 12px; }
+  .stock-item { background: rgba(26,20,16,0.4); border: 1px solid rgba(201,169,110,0.12); border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; transition: border-color 0.3s; }
+  .stock-item:hover { border-color: rgba(201,169,110,0.25); }
+  .stock-text { font-size: 12.5px; line-height: 1.8; flex: 1; white-space: pre-wrap; }
+  .stock-meta { font-size: 10.5px; color: var(--text-dim); margin-top: 6px; }
+  .stock-actions { display: flex; flex-direction: column; gap: 6px; min-width: 72px; }
+  .stock-actions .btn { padding: 7px 10px; font-size: 11px; }
+  .empty-state { text-align: center; padding: 36px; color: var(--text-dim); font-size: 13px; line-height: 1.9; }
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--brown-light); border: 1px solid rgba(201,169,110,0.4); color: var(--text); padding: 13px 20px; border-radius: 10px; font-size: 13px; z-index: 999; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: none; }
+  /* Trend section */
+  .trend-card {
+    background: var(--brown-mid);
+    border: 1px solid rgba(201,169,110,0.15);
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .trend-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .trend-meta { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; }
+  .trend-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .trend-group-title { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .trend-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; margin-bottom: 8px;
+    background: rgba(26,20,16,0.45);
+    border: 1px solid rgba(201,169,110,0.1);
+    border-radius: 7px;
+    font-size: 12.5px; line-height: 1.5;
+    transition: border-color 0.2s;
+  }
+  .trend-item:hover { border-color: rgba(201,169,110,0.25); }
+  .trend-rank { font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold); min-width: 18px; line-height: 1; padding-top: 1px; }
+  .trend-content { flex: 1; }
+  .trend-title { font-size: 13px; color: var(--text); margin-bottom: 2px; }
+  .trend-desc { font-size: 11px; color: var(--text-dim); }
+  .trend-keyword { font-size: 13px; color: var(--text); }
+  .trend-empty { text-align: center; padding: 28px; color: var(--text-dim); font-size: 13px; line-height: 1.9; grid-column: 1/-1; }
+  .trend-loading { text-align: center; padding: 28px; color: var(--gold); font-size: 13px; grid-column: 1/-1; }
+  .btn-trend { padding: 9px 20px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+  /* Stories section */
+  .stories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  .story-card {
+    background: rgba(26,20,16,0.5);
+    border: 1px solid rgba(192,57,43,0.2);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 12px;
+    animation: fadeUp 0.45s ease both;
+  }
+  .story-card:nth-child(2) { animation-delay: 0.1s; }
+  .story-card:nth-child(3) { animation-delay: 0.2s; }
+  .story-label { font-family: 'Cinzel', serif; font-size: 9px; color: var(--rose); letter-spacing: 0.2em; }
+  .story-text { font-size: 13px; line-height: 1.9; color: var(--text); flex: 1; white-space: pre-wrap; }
+  .story-chars { font-size: 10px; color: var(--text-dim); text-align: right; }
+  .story-actions { display: flex; gap: 8px; }
+  .story-actions .btn { flex: 1; padding: 7px; font-size: 11px; }
+  @media (max-width: 768px) {
+    main { padding: 20px; }
+    header { padding: 16px 20px; }
+    .two-col { grid-template-columns: 1fr; }
+    .results-grid { grid-template-columns: 1fr; }
+    .image-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo-en">GINZA ROSSO FUKUOKA</div>
+    <div class="logo-ja">インスタ投稿ダッシュボード</div>
+  </div>
+  <div class="header-badge">
+    <span class="status-dot ok"></span>
+    <span>Powered by Claude AI</span>
+  </div>
+</header>
+
+<main>
+
+
+  <!-- ① トレンド取得 -->
+  <div class="trend-card">
+    <div class="trend-header">
+      <div class="section-title" style="margin-bottom:0">Trend Research</div>
+      <button class="btn btn-outline btn-trend" id="trendBtn" onclick="fetchTrend()">
+        <div class="spinner" id="trendSpinner" style="border-top-color:var(--gold)"></div>
+        <span id="trendBtnText">🔍 トレンドを取得する</span>
+      </button>
+    </div>
+    <div class="trend-cols" id="trendCols">
+      <div class="trend-empty">
+        「トレンドを取得する」を押すと<br>
+        Perplexity AIが最新情報をリサーチします
+      </div>
+    </div>
+    <div class="trend-meta" id="trendMeta"></div>
+  </div>
+
+  <!-- ② 素材入力 -->
+  <div class="two-col">
+    <div class="card">
+      <div class="section-title">写真素材</div>
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">📷</div>
+        <div class="upload-label">
+          ドラッグ＆ドロップ、または<span onclick="document.getElementById('fileInput').click()">クリックして選択</span><br>
+          before/after・施術・商品写真
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFileSelect(event)">
+      </div>
+      <div class="image-grid" id="imageGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">投稿情報</div>
+      <div class="form-group">
+        <label>投稿タイプ</label>
+        <select id="postType">
+          <option>施術・ビフォーアフター</option>
+          <option>キャンペーン告知</option>
+          <option>美容知識・豆知識</option>
+          <option>スタッフ・サロン日常</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>施術メニュー</label>
+        <select id="menuType">
+          <option>iPS細胞培養エクソソーム導入</option>
+          <option>ハードピーリング</option>
+          <option>陶肌ピーリング</option>
+          <option>小顔ピーリング</option>
+          <option>ニキビ専用ピーリング</option>
+          <option>艶肌ピーリング</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>お客様の声・施術メモ</label>
+        <textarea id="voiceInput" rows="4" placeholder="例：30代・ニキビ跡が気になっていたお客様。3回目の来店で毛穴が目立たなくなったと喜んでいただけた。"></textarea>
+      </div>
+      <div class="form-group">
+        <label>補足情報（任意）</label>
+        <textarea id="extraInput" rows="2" placeholder="例：3月キャンペーン ¥19,800→¥12,100"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ターゲット層</label>
+        <div class="tag-pills">
+          <div class="tag-pill active" onclick="this.classList.toggle('active')">20〜30代女性</div>
+          <div class="tag-pill" onclick="this.classList.toggle('active')">ニキビ・毛穴悩み</div>
+          <div class="tag-pill" onclick="this.classList.toggle('active')">美白・透明感</div>
+          <div class="tag-pill" onclick="this.classList.toggle('active')">アンチエイジング</div>
+          <div class="tag-pill" onclick="this.classList.toggle('active')">イベント・結婚式前</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 生成ボタン -->
+  <div style="display:flex;justify-content:center;">
+    <button class="btn btn-rose gen-btn" id="genBtn" onclick="generatePosts()">
+      <div class="spinner" id="spinner"></div>
+      <span id="genBtnText">✦ 投稿文を3パターン生成する</span>
+    </button>
+  </div>
+
+  <!-- ④ 生成結果 -->
+  <div id="resultsSection" style="display:none">
+    <div class="card">
+      <div class="section-title">生成された投稿文</div>
+      <div class="results-grid" id="resultsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ④-b ストーリーズ -->
+  <div id="storiesSection" style="display:none">
+    <div class="card">
+      <div class="section-title">ストーリーズ用 短文（100文字以内）</div>
+      <div class="stories-grid" id="storiesGrid"></div>
+    </div>
+  </div>
+
+  <!-- ⑤ 投稿ストック -->
+  <div class="card">
+    <div class="section-title">投稿ストック</div>
+    <div class="stock-list" id="stockList">
+      <div class="empty-state">まだ投稿がストックされていません。<br>生成後に「保存」を押してストックしてください。</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let images = [];
+let stocks = [];
+let trendData = null; // Perplexityで取得したトレンド情報を保持
+
+// ─────────────────────────────────────────
+// トレンド取得（Perplexity API）
+// ─────────────────────────────────────────
+async function fetchTrend() {
+  const btn = document.getElementById('trendBtn');
+  const sp = document.getElementById('trendSpinner');
+  const txt = document.getElementById('trendBtnText');
+  btn.disabled = true; sp.style.display = 'block'; txt.textContent = 'リサーチ中...';
+  document.getElementById('trendCols').innerHTML = '<div class="trend-loading">Perplexity AIがウェブをリサーチしています...</div>';
+
+  try {
+    const r = await fetch('/api/trend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      throw new Error(e.error || `HTTPエラー: ${r.status}`);
+    }
+    const data = await r.json();
+    if (data.parseError) {
+      document.getElementById('trendCols').innerHTML = `<div class="trend-empty">取得データの解析に失敗しました。再度お試しください。</div>`;
+      return;
+    }
+    trendData = data;
+    renderTrend(data);
+    toast('✓ トレンド情報を取得しました');
+  } catch(e) {
+    console.error(e);
+    document.getElementById('trendCols').innerHTML = `<div class="trend-empty">取得に失敗しました: ${e.message}</div>`;
+    toast('❌ トレンド取得に失敗しました');
+  }
+
+  btn.disabled = false; sp.style.display = 'none'; txt.textContent = '🔍 トレンドを再取得する';
+}
+
+function renderTrend(data) {
+  const { industryTrends = [], fukuokaKeywords = [], fetchedAt = '' } = data;
+
+  document.getElementById('trendCols').innerHTML = `
+    <div>
+      <div class="trend-group-title">美容サロン業界 トレンドTop3</div>
+      ${industryTrends.map(t => `
+        <div class="trend-item">
+          <span class="trend-rank">${t.rank}</span>
+          <div class="trend-content">
+            <div class="trend-title">${esc(t.title)}</div>
+            <div class="trend-desc">${esc(t.desc)}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div>
+      <div class="trend-group-title">福岡エリア 流行キーワードTop3</div>
+      ${fukuokaKeywords.map(k => `
+        <div class="trend-item">
+          <span class="trend-rank">${k.rank}</span>
+          <div class="trend-content">
+            <div class="trend-keyword">${esc(k.keyword)}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+
+  if (fetchedAt) {
+    document.getElementById('trendMeta').textContent = `最終取得：${fetchedAt}`;
+  }
+}
+
+// ─────────────────────────────────────────
+// ファイルアップロード
+// ─────────────────────────────────────────
+const zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); addFiles([...e.dataTransfer.files]); });
+function handleFileSelect(e) { addFiles([...e.target.files]); }
+function addFiles(files) {
+  files.filter(f => f.type.startsWith('image/')).forEach(f => {
+    const reader = new FileReader();
+    reader.onload = e => { images.push({ id: Date.now()+Math.random(), src: e.target.result, name: f.name }); renderGrid(); };
+    reader.readAsDataURL(f);
+  });
+}
+function renderGrid() {
+  document.getElementById('imageGrid').innerHTML = images.map((img, i) => `
+    <div class="image-thumb ${img.sel?'selected':''}" onclick="images[${i}].sel=!images[${i}].sel;renderGrid()">
+      <img src="${img.src}">
+      <button class="remove-btn" onclick="event.stopPropagation();images.splice(${i},1);renderGrid()">✕</button>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────
+// 投稿文 + ストーリーズ 同時生成
+// ─────────────────────────────────────────
+async function generatePosts() {
+  const btn = document.getElementById('genBtn');
+  const sp = document.getElementById('spinner');
+  const txt = document.getElementById('genBtnText');
+  btn.disabled = true; sp.style.display = 'block'; txt.textContent = '生成中...';
+
+  const tags = [...document.querySelectorAll('.tag-pill.active')].map(t => t.textContent).join('、');
+  const postType = document.getElementById('postType').value;
+  const menu = document.getElementById('menuType').value;
+  const voice = document.getElementById('voiceInput').value || 'なし';
+  const extra = document.getElementById('extraInput').value || 'なし';
+
+  // トレンド情報を投稿プロンプトに反映
+  const trendSection = trendData ? `
+【最新トレンド情報（Perplexity取得）】
+■ 業界トレンド：${trendData.industryTrends?.map(t => t.title).join('・') || 'なし'}
+■ 福岡流行ワード：${trendData.fukuokaKeywords?.map(k => k.keyword).join('・') || 'なし'}
+※ 上記トレンドを自然な形で投稿文に織り込んでください。` : '';
+
+  const prompt = `あなたは銀座ロッソ福岡店（REVIメーカー直営エステサロン）のインスタグラム担当者です。
+
+【サロン情報】
+- 店名：REVI 銀座ロッソ 福岡店（福岡のメーカーズエステサロン）
+- 特徴：ハードピーリング・陶肌ピーリング専門、iPS細胞培養エクソソーム導入（京都大学・中山教授監修）
+- 住所：福岡市中央区警固2丁目11-15
+- 予約LINE：https://lin.ee/X8BC3Og
+
+【今回の投稿情報】
+- 投稿タイプ：${postType}
+- 施術メニュー：${menu}
+- ターゲット：${tags}
+- お客様の声・メモ：${voice}
+- 補足：${extra}
+${trendSection}
+
+【文体・スタイルのルール（厳守）】
+1. 絵文字は控えめに。使うとしても🤍を1〜2個まで。他の絵文字は使わない。
+2. 短い行で改行を多用する（1行10〜20文字程度を目安に、こまめに改行）
+3. お客様の声がある場合は「　」で引用する
+4. 区切り線（――――――――――）を本文の区切りに使う
+5. 投稿の末尾は「▶︎▶︎▶︎」で締める（その後に予約誘導文を1行）
+6. ハッシュタグは5〜8個のみ。必ず含めるタグ：#銀座ROSSO福岡店 #福岡エステ。他は内容に合わせて選ぶ。
+7. 丁寧だが堅くなりすぎない、上品で親しみやすいトーン
+
+【投稿文の構成例】
+（書き出し1〜2行）
+――――――――――
+（本文：短い行で展開）
+（お客様の声がある場合：「〜〜〜」）
+――――――――――
+（まとめ・CTA）
+▶︎▶︎▶︎ ご予約はプロフィールのLINEから🤍
+
+#銀座ROSSO福岡店 #福岡エステ #（内容に合うタグ）…
+
+インスタグラム投稿文を3パターン作成してください。
+- パターン1：感情・共感型
+- パターン2：専門知識・教育型
+- パターン3：ベネフィット訴求型
+
+必ずこのJSONのみ返してください（前後に説明や\`\`\`不要）：
+{"posts":[{"pattern":"パターン1：感情・共感型","text":"..."},{"pattern":"パターン2：専門知識・教育型","text":"..."},{"pattern":"パターン3：ベネフィット訴求型","text":"..."}]}`;
+
+  // Haiku用ストーリーズプロンプト
+  const storiesPrompt = `銀座ロッソ福岡店（REVIメーカー直営エステサロン）のインスタグラムストーリーズ用の短文を3パターン作成してください。
+
+【条件】
+- 施術メニュー：${menu}
+- 投稿タイプ：${postType}
+- 各パターン：100文字以内（厳守）
+- 絵文字：🤍を1個まで
+- 行動喚起（CTA）を含める
+- パターン1：疑問・問いかけ型
+- パターン2：限定・緊急型
+- パターン3：ベネフィット型
+
+必ずこのJSONのみ返してください：
+{"stories":[{"pattern":"疑問・問いかけ型","text":"..."},{"pattern":"限定・緊急型","text":"..."},{"pattern":"ベネフィット型","text":"..."}]}`;
+
+  try {
+    const r = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, storiesPrompt })
+    });
+
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      throw new Error(err.error || `HTTPエラー: ${r.status}`);
+    }
+
+    const data = await r.json();
+
+    // 投稿文（Sonnet）
+    const postsRaw = data.posts?.content?.[0]?.text?.replace(/```json|```/g, '').trim();
+    const postsParsed = JSON.parse(postsRaw);
+    showResults(postsParsed.posts);
+
+    // ストーリーズ（Haiku）
+    if (data.stories) {
+      const storiesRaw = data.stories?.content?.[0]?.text?.replace(/```json|```/g, '').trim();
+      const storiesParsed = JSON.parse(storiesRaw);
+      showStories(storiesParsed.stories);
+    }
+
+    toast('✓ 投稿文3パターン＋ストーリーズ生成完了！');
+  } catch(e) {
+    console.error(e);
+    toast('❌ 生成に失敗しました: ' + e.message);
+  }
+
+  btn.disabled = false; sp.style.display = 'none'; txt.textContent = '✦ 投稿文を3パターン生成する';
+}
+
+// ─────────────────────────────────────────
+// 表示
+// ─────────────────────────────────────────
+function showResults(posts) {
+  const sec = document.getElementById('resultsSection');
+  sec.style.display = 'block';
+  document.getElementById('resultsGrid').innerHTML = posts.map((p, i) => `
+    <div class="result-card">
+      <div class="result-label">${esc(p.pattern)}</div>
+      <div class="result-text">${esc(p.text)}</div>
+      <div class="result-actions">
+        <button class="btn btn-outline" onclick="copy(posts[${i}].text)">コピー</button>
+        <button class="btn btn-gold" onclick="saveStock(posts[${i}])">保存</button>
+      </div>
+    </div>`).join('');
+  window.posts = posts;
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showStories(stories) {
+  const sec = document.getElementById('storiesSection');
+  sec.style.display = 'block';
+  document.getElementById('storiesGrid').innerHTML = stories.map((s, i) => {
+    const len = s.text.length;
+    const over = len > 100;
+    return `
+      <div class="story-card">
+        <div class="story-label">${esc(s.pattern)}</div>
+        <div class="story-text">${esc(s.text)}</div>
+        <div class="story-chars" style="color:${over?'var(--rose)':'var(--text-dim)'}">
+          ${len}文字${over?' ⚠ 100字超過':''}
+        </div>
+        <div class="story-actions">
+          <button class="btn btn-outline" onclick="copy(window.stories[${i}].text)">コピー</button>
+        </div>
+      </div>`;
+  }).join('');
+  window.stories = stories;
+}
+
+// ─────────────────────────────────────────
+// ストック管理
+// ─────────────────────────────────────────
+function saveStock(post) {
+  const now = new Date();
+  const d = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const item = { ...post, savedAt: d, id: Date.now() };
+  stocks.unshift(item);
+  renderStocks();
+  toast('✓ ストックに保存しました');
+}
+
+function renderStocks() {
+  if (!stocks.length) {
+    document.getElementById('stockList').innerHTML = '<div class="empty-state">まだ投稿がストックされていません。<br>生成後に「保存」を押してストックしてください。</div>';
+    return;
+  }
+  document.getElementById('stockList').innerHTML = stocks.map(s => `
+    <div class="stock-item">
+      <div>
+        <div class="stock-text">${esc(s.text)}</div>
+        <div class="stock-meta">${esc(s.pattern)} ｜ ${s.savedAt}</div>
+      </div>
+      <div class="stock-actions">
+        <button class="btn btn-outline" onclick="copy(${JSON.stringify(s.text)})">コピー</button>
+        <button class="btn btn-outline" style="color:var(--rose);border-color:rgba(192,57,43,0.3)" onclick="delStock(${s.id})">削除</button>
+      </div>
+    </div>`).join('');
+}
+
+function delStock(id) { stocks = stocks.filter(s => s.id !== id); renderStocks(); }
+
+// ─────────────────────────────────────────
+// ユーティリティ
+// ─────────────────────────────────────────
+function copy(text) { navigator.clipboard.writeText(text).then(() => toast('✓ コピーしました')); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
