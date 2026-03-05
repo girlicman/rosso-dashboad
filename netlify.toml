@@ -1,6 +1,6 @@
 [build]
-  publish = "rosso_dashboard.html"
-  functions = "."
+  publish = "."
+  functions = "netlify/functions"
 
 [[redirects]]
   from = "/api/generate"
