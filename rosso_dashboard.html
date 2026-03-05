@@ -212,24 +212,23 @@
     padding: 28px;
   }
   .trend-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .trend-meta { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; }
-  .trend-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .trend-group-title { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .trend-meta { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; margin-top: 16px; }
+  .trend-sections { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .trend-section-title { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
   .trend-item {
-    display: flex; align-items: flex-start; gap: 10px;
+    display: flex; flex-direction: column; gap: 4px;
     padding: 10px 12px; margin-bottom: 8px;
     background: rgba(26,20,16,0.45);
     border: 1px solid rgba(201,169,110,0.1);
     border-radius: 7px;
-    font-size: 12.5px; line-height: 1.5;
     transition: border-color 0.2s;
   }
-  .trend-item:hover { border-color: rgba(201,169,110,0.25); }
-  .trend-rank { font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold); min-width: 18px; line-height: 1; padding-top: 1px; }
-  .trend-content { flex: 1; }
-  .trend-title { font-size: 13px; color: var(--text); margin-bottom: 2px; }
-  .trend-desc { font-size: 11px; color: var(--text-dim); }
-  .trend-keyword { font-size: 13px; color: var(--text); }
+  .trend-item:hover { border-color: rgba(201,169,110,0.3); }
+  .trend-title { font-size: 12.5px; color: var(--text); line-height: 1.5; }
+  .trend-summary { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+  .trend-url { font-size: 10px; color: rgba(201,169,110,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trend-url a { color: inherit; text-decoration: none; }
+  .trend-url a:hover { color: var(--gold); }
   .trend-empty { text-align: center; padding: 28px; color: var(--text-dim); font-size: 13px; line-height: 1.9; grid-column: 1/-1; }
   .trend-loading { text-align: center; padding: 28px; color: var(--gold); font-size: 13px; grid-column: 1/-1; }
   .btn-trend { padding: 9px 20px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
@@ -284,10 +283,10 @@
         <span id="trendBtnText">🔍 トレンドを取得する</span>
       </button>
     </div>
-    <div class="trend-cols" id="trendCols">
+    <div class="trend-sections" id="trendSections">
       <div class="trend-empty">
         「トレンドを取得する」を押すと<br>
-        Perplexity AIが最新情報をリサーチします
+        Tavily AIが最新情報をリサーチします
       </div>
     </div>
     <div class="trend-meta" id="trendMeta"></div>
@@ -393,14 +392,14 @@ let stocks = [];
 let trendData = null; // Perplexityで取得したトレンド情報を保持
 
 // ─────────────────────────────────────────
-// トレンド取得（Perplexity API）
+// トレンド取得（Tavily API）
 // ─────────────────────────────────────────
 async function fetchTrend() {
   const btn = document.getElementById('trendBtn');
   const sp = document.getElementById('trendSpinner');
   const txt = document.getElementById('trendBtnText');
   btn.disabled = true; sp.style.display = 'block'; txt.textContent = 'リサーチ中...';
-  document.getElementById('trendCols').innerHTML = '<div class="trend-loading">Perplexity AIがウェブをリサーチしています...</div>';
+  document.getElementById('trendSections').innerHTML = '<div class="trend-loading">Tavily AIがウェブをリサーチしています...</div>';
 
   try {
     const r = await fetch('/api/trend', {
@@ -413,16 +412,12 @@ async function fetchTrend() {
       throw new Error(e.error || `HTTPエラー: ${r.status}`);
     }
     const data = await r.json();
-    if (data.parseError) {
-      document.getElementById('trendCols').innerHTML = `<div class="trend-empty">取得データの解析に失敗しました。再度お試しください。</div>`;
-      return;
-    }
     trendData = data;
     renderTrend(data);
     toast('✓ トレンド情報を取得しました');
   } catch(e) {
     console.error(e);
-    document.getElementById('trendCols').innerHTML = `<div class="trend-empty">取得に失敗しました: ${e.message}</div>`;
+    document.getElementById('trendSections').innerHTML = `<div class="trend-empty">取得に失敗しました: ${esc(e.message)}</div>`;
     toast('❌ トレンド取得に失敗しました');
   }
 
@@ -430,34 +425,27 @@ async function fetchTrend() {
 }
 
 function renderTrend(data) {
-  const { industryTrends = [], fukuokaKeywords = [], fetchedAt = '' } = data;
+  const { sections = [] } = data;
 
-  document.getElementById('trendCols').innerHTML = `
-    <div>
-      <div class="trend-group-title">美容サロン業界 トレンドTop3</div>
-      ${industryTrends.map(t => `
-        <div class="trend-item">
-          <span class="trend-rank">${t.rank}</span>
-          <div class="trend-content">
-            <div class="trend-title">${esc(t.title)}</div>
-            <div class="trend-desc">${esc(t.desc)}</div>
-          </div>
-        </div>`).join('')}
-    </div>
-    <div>
-      <div class="trend-group-title">福岡エリア 流行キーワードTop3</div>
-      ${fukuokaKeywords.map(k => `
-        <div class="trend-item">
-          <span class="trend-rank">${k.rank}</span>
-          <div class="trend-content">
-            <div class="trend-keyword">${esc(k.keyword)}</div>
-          </div>
-        </div>`).join('')}
-    </div>`;
-
-  if (fetchedAt) {
-    document.getElementById('trendMeta').textContent = `最終取得：${fetchedAt}`;
+  if (!sections.length) {
+    document.getElementById('trendSections').innerHTML = '<div class="trend-empty">結果が取得できませんでした</div>';
+    return;
   }
+
+  document.getElementById('trendSections').innerHTML = sections.map(sec => `
+    <div>
+      <div class="trend-section-title">${esc(sec.label)}</div>
+      ${(sec.results || []).map(item => `
+        <div class="trend-item">
+          <div class="trend-title">${esc(item.title)}</div>
+          <div class="trend-summary">${esc(item.summary)}</div>
+          <div class="trend-url"><a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.url)}</a></div>
+        </div>`).join('')}
+    </div>`).join('');
+
+  const now = new Date();
+  document.getElementById('trendMeta').textContent =
+    `最終取得：${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
 }
 
 // ─────────────────────────────────────────
@@ -499,10 +487,11 @@ async function generatePosts() {
   const extra = document.getElementById('extraInput').value || 'なし';
 
   // トレンド情報を投稿プロンプトに反映
-  const trendSection = trendData ? `
-【最新トレンド情報（Perplexity取得）】
-■ 業界トレンド：${trendData.industryTrends?.map(t => t.title).join('・') || 'なし'}
-■ 福岡流行ワード：${trendData.fukuokaKeywords?.map(k => k.keyword).join('・') || 'なし'}
+  const trendSection = trendData?.sections?.length ? `
+【最新トレンド情報（Tavily取得）】
+${trendData.sections.map(sec =>
+  `■ ${sec.label}：${sec.results.map(r => r.title).join('・')}`
+).join('\n')}
 ※ 上記トレンドを自然な形で投稿文に織り込んでください。` : '';
 
   const prompt = `あなたは銀座ロッソ福岡店（REVIメーカー直営エステサロン）のインスタグラム担当者です。
