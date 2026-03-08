@@ -578,13 +578,17 @@ textarea::placeholder { color: var(--ink-4); }
     </div>
   </div>
 
-  <!-- ② 入力 -->
+  <!-- ② 施術メニュー入力 + 素材指示ボタン -->
   <div class="card" id="cardInput">
     <div class="card-header">
       <div class="card-title">
         <div class="step-num" id="stepNum2">2</div>
         施術メニューを選ぶ
       </div>
+      <button class="btn btn-secondary" id="adviseBtn" onclick="runAdvise()">
+        <div class="spinner dark" id="adviseSpinner"></div>
+        <span id="adviseBtnText">素材指示を出す</span>
+      </button>
     </div>
     <div class="card-body">
       <div class="form-row">
@@ -604,18 +608,16 @@ textarea::placeholder { color: var(--ink-4); }
           <textarea id="voiceInput" rows="3" placeholder="例：3回目の来店で毛穴が目立たなくなったと喜んでいただけた"></textarea>
         </div>
       </div>
-
       <div style="margin-top:12px">
         <div class="form-group">
           <div class="form-label">補足情報（任意）</div>
           <textarea id="extraInput" rows="2" placeholder="例：3月キャンペーン ¥19,800→¥12,100"></textarea>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ③ 素材指示（生成後に表示） -->
+  <!-- ③ 素材指示（advise後に表示） -->
   <div class="card" id="cardMaterial" style="display:none">
     <div class="card-header">
       <div class="card-title">
@@ -625,10 +627,7 @@ textarea::placeholder { color: var(--ink-4); }
       <div class="tag tag-blue" id="postTypeTag"></div>
     </div>
     <div class="card-body">
-
-      <!-- AIの提案理由 -->
       <div class="info-box" id="postTypeReasonBox" style="margin-bottom:14px"></div>
-
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="advice-box">
           <div class="advice-label">📷 撮ってほしい素材</div>
@@ -639,21 +638,19 @@ textarea::placeholder { color: var(--ink-4); }
           <div class="advice-text" id="canvaAdviceText"></div>
         </div>
       </div>
-
       <div style="margin-top:14px">
-        <a class="btn btn-primary btn-large" href="https://www.canva.com" target="_blank" rel="noopener" id="canvaBtn">
+        <a class="btn btn-primary btn-large" href="https://www.canva.com" target="_blank" rel="noopener">
           Canvaで編集する →
         </a>
       </div>
-
     </div>
   </div>
 
-  <!-- ④ 画像アップロード -->
+  <!-- ④ 画像アップロード（Canva編集後） -->
   <div class="card" id="cardUpload">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num" id="stepNum4">3</div>
+        <div class="step-num">3</div>
         編集した画像をアップロード
       </div>
     </div>
@@ -685,8 +682,6 @@ textarea::placeholder { color: var(--ink-4); }
       </div>
     </div>
     <div class="card-body">
-
-      <!-- 投稿文 -->
       <div class="result-block">
         <div class="result-block-header">
           <div class="result-block-title">投稿文</div>
@@ -694,8 +689,6 @@ textarea::placeholder { color: var(--ink-4); }
         </div>
         <div class="result-block-body" id="postText"></div>
       </div>
-
-      <!-- ストーリーズ -->
       <div class="result-block">
         <div class="result-block-header">
           <div class="result-block-title">ストーリーズ</div>
@@ -706,8 +699,6 @@ textarea::placeholder { color: var(--ink-4); }
         </div>
         <div class="result-block-body" id="storyText"></div>
       </div>
-
-      <!-- トーン微調整 -->
       <div style="margin-top:16px">
         <div class="form-label" style="margin-bottom:8px">トーンを調整する</div>
         <div class="tone-btns">
@@ -717,7 +708,6 @@ textarea::placeholder { color: var(--ink-4); }
           <button class="tone-btn" onclick="regenerate('キャンペーン・限定感を強調したトーンに')">限定感を出す</button>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -725,7 +715,7 @@ textarea::placeholder { color: var(--ink-4); }
   <div class="card" id="cardPost" style="display:none">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num" id="stepNum7">4</div>
+        <div class="step-num">4</div>
         Instagramに投稿
       </div>
     </div>
@@ -747,7 +737,7 @@ textarea::placeholder { color: var(--ink-4); }
 let images = [];
 let trendData = null;
 let instagramAdvice = null;
-let lastGeneratedData = null;
+let adviseData = null;
 
 // ─────────────────────────────────────────
 // ① トレンド取得 + Instagram分析（並列）
@@ -761,7 +751,7 @@ async function runAnalysis() {
 
   try {
     const [trendRes, instaRes] = await Promise.allSettled([
-      fetch('/api/trend', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) }),
+      fetch('/api/trend',     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) }),
       fetch('/api/instagram', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) }),
     ]);
 
@@ -816,6 +806,55 @@ function renderTrend(data) {
 }
 
 // ─────────────────────────────────────────
+// ② 素材指示を先に出す（Canva編集前）
+// ─────────────────────────────────────────
+async function runAdvise() {
+  const btn = document.getElementById('adviseBtn');
+  const sp  = document.getElementById('adviseSpinner');
+  const txt = document.getElementById('adviseBtnText');
+  btn.disabled = true; sp.style.display = 'block'; txt.textContent = '考え中...';
+
+  const payload = {
+    menu:            document.getElementById('menuType').value,
+    voice:           document.getElementById('voiceInput').value || 'なし',
+    extra:           document.getElementById('extraInput').value || 'なし',
+    trendData:       trendData,
+    instagramAdvice: instagramAdvice,
+  };
+
+  try {
+    const r = await fetch('/api/advise', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      throw new Error(e.error || `HTTPエラー: ${r.status}`);
+    }
+
+    const data = await r.json();
+    adviseData = data;
+
+    // 素材指示カードを表示
+    document.getElementById('cardMaterial').style.display = 'block';
+    document.getElementById('postTypeTag').textContent     = data.postType || '';
+    document.getElementById('postTypeReasonBox').textContent = data.postTypeReason || '';
+    document.getElementById('materialAdviceText').textContent = data.materialAdvice || '';
+    document.getElementById('canvaAdviceText').textContent    = data.canvaAdvice || '';
+
+    document.getElementById('cardMaterial').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    toast('✓ 素材指示を生成しました');
+  } catch(e) {
+    console.error(e);
+    toast('失敗しました: ' + e.message);
+  }
+
+  btn.disabled = false; sp.style.display = 'none'; txt.textContent = '素材指示を出す';
+}
+
+// ─────────────────────────────────────────
 // ファイルアップロード
 // ─────────────────────────────────────────
 const zone = document.getElementById('uploadZone');
@@ -839,7 +878,7 @@ function renderImages() {
 }
 
 // ─────────────────────────────────────────
-// ⑤ 投稿文生成
+// ③ 投稿文 + ストーリーズ生成
 // ─────────────────────────────────────────
 async function generateContent(tone = null) {
   const btn = document.getElementById('genBtn');
@@ -853,6 +892,8 @@ async function generateContent(tone = null) {
     extra:           document.getElementById('extraInput').value || 'なし',
     trendData:       trendData,
     instagramAdvice: instagramAdvice,
+    // adviseで決まった投稿タイプをそのまま渡す
+    postType:        adviseData?.postType || null,
     tone:            tone,
   };
 
@@ -869,8 +910,19 @@ async function generateContent(tone = null) {
     }
 
     const data = await r.json();
-    lastGeneratedData = data;
-    showResults(data);
+
+    // 生成結果を表示
+    document.getElementById('cardResult').style.display = 'block';
+    document.getElementById('postText').textContent  = data.post  || '';
+    document.getElementById('storyText').textContent = data.story || '';
+
+    const len = (data.story || '').length;
+    const cc = document.getElementById('storyCharCount');
+    cc.textContent = `${len}文字`;
+    cc.className = 'char-count' + (len > 100 ? ' over' : '');
+
+    document.getElementById('cardPost').style.display = 'block';
+    document.getElementById('cardResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
     toast('✓ 生成完了！');
   } catch(e) {
     console.error(e);
@@ -880,32 +932,6 @@ async function generateContent(tone = null) {
   btn.disabled = false; sp.style.display = 'none'; txt.textContent = '投稿文を生成する';
 }
 
-function showResults(data) {
-  // 素材指示カード表示
-  document.getElementById('cardMaterial').style.display = 'block';
-  document.getElementById('postTypeTag').textContent = data.postType || '';
-  document.getElementById('postTypeReasonBox').textContent = data.postTypeReason || '';
-  document.getElementById('materialAdviceText').textContent = data.materialAdvice || '';
-  document.getElementById('canvaAdviceText').textContent = data.canvaAdvice || '';
-
-  // 生成結果カード表示
-  document.getElementById('cardResult').style.display = 'block';
-  document.getElementById('postText').textContent = data.post || '';
-  document.getElementById('storyText').textContent = data.story || '';
-
-  // ストーリーズ文字数
-  const len = (data.story || '').length;
-  const cc = document.getElementById('storyCharCount');
-  cc.textContent = `${len}文字`;
-  cc.className = 'char-count' + (len > 100 ? ' over' : '');
-
-  // Instagram投稿カード表示
-  document.getElementById('cardPost').style.display = 'block';
-
-  document.getElementById('cardResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// トーン微調整（再生成）
 async function regenerate(tone) {
   await generateContent(tone);
 }
@@ -919,10 +945,7 @@ function copyText(id) {
 }
 
 function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function toast(msg) {
