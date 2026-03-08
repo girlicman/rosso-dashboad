@@ -544,11 +544,11 @@ textarea::placeholder { color: var(--ink-4); }
 
 <main>
 
-  <!-- ① トレンド＋分析 -->
+  <!-- ① トレンド取得 -->
   <div class="card" id="cardTrend">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num" id="stepNum1">1</div>
+        <div class="step-num">1</div>
         トレンド取得・分析
       </div>
       <button class="btn btn-secondary" id="trendBtn" onclick="runAnalysis()">
@@ -557,24 +557,27 @@ textarea::placeholder { color: var(--ink-4); }
       </button>
     </div>
     <div class="card-body">
-
-      <!-- Instagram アドバイス -->
-      <div id="instagramAdviceBox" style="display:none">
-        <div class="advice-box">
-          <div class="advice-label">Instagram 分析</div>
-          <div class="advice-text" id="instagramAdviceText"></div>
-        </div>
-        <div class="divider"></div>
-      </div>
-
-      <!-- トレンド -->
       <div class="trend-grid" id="trendGrid">
         <div class="trend-empty">
           ボタンを押すとTavilyが最新トレンドを<br>リサーチします
         </div>
       </div>
       <div class="trend-meta" id="trendMeta"></div>
+    </div>
+  </div>
 
+  <!-- ①-b Instagram分析アドバイス（取得後に表示） -->
+  <div class="card" id="instagramAdviceBox" style="display:none">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="step-num done">✓</div>
+        先週の分析
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="info-box green">
+        <div class="advice-text" id="instagramAdviceText"></div>
+      </div>
     </div>
   </div>
 
@@ -582,7 +585,7 @@ textarea::placeholder { color: var(--ink-4); }
   <div class="card" id="cardInput">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num" id="stepNum2">2</div>
+        <div class="step-num">2</div>
         施術メニューを選ぶ
       </div>
       <button class="btn btn-secondary" id="adviseBtn" onclick="runAdvise()">
