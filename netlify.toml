@@ -11,3 +11,8 @@
   from = "/api/trend"
   to = "/.netlify/functions/trend"
   status = 200
+
+[[redirects]]
+  from = "/api/instagram"
+  to = "/.netlify/functions/instagram"
+  status = 200
