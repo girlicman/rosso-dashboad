@@ -121,8 +121,8 @@ JSONのみ返してください：
   try {
     // 投稿文（Sonnet）＋ストーリーズ（Haiku）を並列実行
     const [postRes, storiesRes] = await Promise.all([
-      callAPI('claude-sonnet-4-20250514', postPrompt, 2000),
-      callAPI('claude-haiku-4-5-20251001', storiesPrompt, 400),
+      callAPI('claude-sonnet-4-5', postPrompt, 2000),
+      callAPI('claude-haiku-4-5', storiesPrompt, 400),
     ]);
 
     for (const res of [postRes, storiesRes]) {
@@ -138,11 +138,22 @@ JSONのみ返してください：
 
     const [postData, storiesData] = await Promise.all([postRes.json(), storiesRes.json()]);
 
-    const postRaw = postData.content?.[0]?.text?.replace(/```json|```/g, '').trim();
-    const storiesRaw = storiesData.content?.[0]?.text?.replace(/```json|```/g, '').trim();
+    // JSONパースを堅牢に
+    const cleanJSON = (text = '') => {
+      const match = text.match(/\{[\s\S]*\}/);
+      return match ? JSON.parse(match[0]) : null;
+    };
 
-    const postParsed    = JSON.parse(postRaw);
-    const storiesParsed = JSON.parse(storiesRaw);
+    const postParsed    = cleanJSON(postData.content?.[0]?.text);
+    const storiesParsed = cleanJSON(storiesData.content?.[0]?.text);
+
+    if (!postParsed || !storiesParsed) {
+      return {
+        statusCode: 500,
+        headers: { 'Content-Type': 'application/json', ...CORS },
+        body: JSON.stringify({ error: 'AIの返答の解析に失敗しました。再度お試しください。' }),
+      };
+    }
 
     return {
       statusCode: 200,

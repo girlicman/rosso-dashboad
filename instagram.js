@@ -30,7 +30,7 @@ exports.handler = async (event) => {
     // like_count・comments_countはmediaフィールドで直接取得できる
     // ─────────────────────────────────────────
     const mediaRes = await fetch(
-      `https://graph.facebook.com/v19.0/${BUSINESS_ID}/media` +
+      `https://graph.facebook.com/v19.0/me/media` +
       `?fields=id,caption,media_type,timestamp,like_count,comments_count` +
       `&limit=10` +
       `&access_token=${ACCESS_TOKEN}`
@@ -128,7 +128,7 @@ JSONのみ返してください：
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001', // コスト削減のためHaiku
+        model: 'claude-haiku-4-5', // コスト削減のためHaiku
         max_tokens: 300,
         messages: [{ role: 'user', content: analysisPrompt }],
       }),
