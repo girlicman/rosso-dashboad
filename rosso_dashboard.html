@@ -876,7 +876,7 @@ async function runAdvise() {
 }
 
 // ─────────────────────────────────────────
-// ファイルアップロード
+// ファイルアップロード → 即座にCloudinaryへ
 // ─────────────────────────────────────────
 const zone = document.getElementById('uploadZone');
 zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
@@ -886,14 +886,40 @@ function handleFileSelect(e) { addFiles([...e.target.files]); }
 function addFiles(files) {
   files.filter(f => f.type.startsWith('image/')).forEach(f => {
     const reader = new FileReader();
-    reader.onload = e => { images.push({ id: Date.now()+Math.random(), src: e.target.result }); renderImages(); };
+    reader.onload = e => {
+      const src = e.target.result;
+      images.push({ id: Date.now()+Math.random(), src, cloudinaryUrl: null });
+      renderImages();
+      // Cloudinaryに即アップロード
+      uploadToCloudinary(src, images.length - 1);
+    };
     reader.readAsDataURL(f);
   });
 }
+
+async function uploadToCloudinary(base64, index) {
+  try {
+    const r = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageData: base64 }),
+    });
+    if (r.ok) {
+      const data = await r.json();
+      images[index].cloudinaryUrl = data.url;
+      renderImages();
+      toast('✓ 画像をアップロードしました');
+    }
+  } catch(e) {
+    console.error('Cloudinaryアップロード失敗:', e);
+  }
+}
+
 function renderImages() {
   document.getElementById('imagePreview').innerHTML = images.map((img, i) => `
     <div class="image-thumb">
       <img src="${img.src}">
+      ${img.cloudinaryUrl ? '<div style="position:absolute;bottom:4px;left:4px;background:var(--green);border-radius:4px;width:8px;height:8px"></div>' : ''}
       <button class="remove" onclick="images.splice(${i},1);renderImages()">✕</button>
     </div>`).join('');
 }
@@ -999,7 +1025,7 @@ async function postToInstagram(isScheduled) {
     : null;
 
   const payload = {
-    imageData:     images[0].src, // 最初の1枚を使用
+    imageUrl:      images[0].cloudinaryUrl, // CloudinaryのURLを直接渡す
     caption:       caption,
     scheduledTime: scheduledTime,
   };
