@@ -723,12 +723,29 @@ textarea::placeholder { color: var(--ink-4); }
       </div>
     </div>
     <div class="card-body">
-      <div class="info-box green" style="margin-bottom:14px">
-        投稿文をコピーして、Instagramアプリで投稿してください。
+
+      <!-- 予約日時（任意） -->
+      <div class="form-group" style="margin-bottom:14px">
+        <div class="form-label">予約投稿日時（空欄なら即時投稿）</div>
+        <input type="datetime-local" id="scheduleTime"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 14px;color:var(--ink);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;">
       </div>
-      <a class="btn btn-primary btn-large" href="https://www.instagram.com" target="_blank" rel="noopener">
-        Instagramを開く →
-      </a>
+
+      <!-- 投稿ボタン -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="btn btn-primary btn-large" id="postNowBtn" onclick="postToInstagram(false)">
+          <div class="spinner" id="postNowSpinner"></div>
+          <span id="postNowText">今すぐ投稿する</span>
+        </button>
+        <button class="btn btn-outline btn-large" id="postScheduleBtn" onclick="postToInstagram(true)">
+          <div class="spinner dark" id="postScheduleSpinner"></div>
+          <span id="postScheduleText">予約投稿する</span>
+        </button>
+      </div>
+
+      <!-- 投稿結果 -->
+      <div id="postResultBox" style="display:none;margin-top:14px"></div>
+
     </div>
   </div>
 
@@ -937,6 +954,85 @@ async function generateContent(tone = null) {
 
 async function regenerate(tone) {
   await generateContent(tone);
+}
+
+// ─────────────────────────────────────────
+// ⑦ Instagram投稿（即時 or 予約）
+// ─────────────────────────────────────────
+async function postToInstagram(isScheduled) {
+  // 画像チェック
+  if (!images.length) {
+    toast('画像をアップロードしてください');
+    return;
+  }
+
+  // 投稿文チェック
+  const caption = document.getElementById('postText').textContent;
+  if (!caption) {
+    toast('先に投稿文を生成してください');
+    return;
+  }
+
+  // 予約の場合は日時チェック
+  const scheduleInput = document.getElementById('scheduleTime').value;
+  if (isScheduled && !scheduleInput) {
+    toast('予約日時を入力してください');
+    return;
+  }
+
+  const nowBtn = document.getElementById('postNowBtn');
+  const schBtn = document.getElementById('postScheduleBtn');
+  const activeBtn = isScheduled ? schBtn : nowBtn;
+  const activeSpinner = document.getElementById(isScheduled ? 'postScheduleSpinner' : 'postNowSpinner');
+  const activeText = document.getElementById(isScheduled ? 'postScheduleText' : 'postNowText');
+
+  activeBtn.disabled = true;
+  nowBtn.disabled = true;
+  schBtn.disabled = true;
+  activeSpinner.style.display = 'block';
+  activeText.textContent = isScheduled ? '予約中...' : '投稿中...';
+
+  // UNIXタイムスタンプに変換
+  const scheduledTime = isScheduled
+    ? Math.floor(new Date(scheduleInput).getTime() / 1000)
+    : null;
+
+  const payload = {
+    imageData:     images[0].src, // 最初の1枚を使用
+    caption:       caption,
+    scheduledTime: scheduledTime,
+  };
+
+  try {
+    const r = await fetch('/api/post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await r.json();
+
+    if (!r.ok) throw new Error(data.error || `HTTPエラー: ${r.status}`);
+
+    // 結果表示
+    const box = document.getElementById('postResultBox');
+    box.style.display = 'block';
+    box.innerHTML = `<div class="info-box green">${esc(data.message)}</div>`;
+    toast(data.type === 'scheduled' ? '✓ 予約投稿を設定しました！' : '✓ Instagramに投稿しました！');
+
+  } catch(e) {
+    console.error(e);
+    const box = document.getElementById('postResultBox');
+    box.style.display = 'block';
+    box.innerHTML = `<div class="info-box" style="background:var(--red-light);color:var(--red)">エラー：${esc(e.message)}</div>`;
+    toast('投稿に失敗しました');
+  }
+
+  activeSpinner.style.display = 'none';
+  activeText.textContent = isScheduled ? '予約投稿する' : '今すぐ投稿する';
+  nowBtn.disabled = false;
+  schBtn.disabled = false;
+  activeBtn.disabled = false;
 }
 
 // ─────────────────────────────────────────
