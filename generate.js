@@ -27,6 +27,9 @@ exports.handler = async (event) => {
 
   const { menu, postType, tags, voice, extra, trendData, instagramAdvice, tone } = body;
 
+  // デバッグ用ログ
+  console.log('受信データ:', JSON.stringify({ menu, postType, voice, extra, tone }));
+
   if (!menu) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'menu が必要です' }) };
   }
