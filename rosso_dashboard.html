@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --white: #ffffff;
   --bg: #f5f5f7;
   --bg-card: #ffffff;
   --ink: #1d1d1f;
@@ -28,510 +27,121 @@
   --red: #ff3b30;
   --red-light: #fff0ef;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
   --radius: 16px;
   --radius-sm: 10px;
   --radius-xs: 8px;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans JP', 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
 
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: 'Noto Sans JP', 'DM Sans', sans-serif;
-  font-weight: 300;
-  min-height: 100vh;
-}
-
-/* ─── Header ─── */
-header {
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-light);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 0 40px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink);
-  letter-spacing: -0.01em;
-}
-
+/* Header */
+header { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 100; padding: 0 40px; height: 56px; display: flex; align-items: center; }
+.logo { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
 .logo span { color: var(--ink-3); font-weight: 300; }
 
-.header-step {
-  font-size: 12px;
-  color: var(--ink-3);
-  letter-spacing: 0.02em;
-}
+/* Main */
+main { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; display: flex; flex-direction: column; gap: 12px; }
 
-/* ─── Main ─── */
-main {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* ─── Step indicator ─── */
-.steps {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 8px;
-  padding: 0 4px;
-}
-
-.step-dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--border);
-  color: var(--ink-4);
-  font-size: 12px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-  flex-shrink: 0;
-}
-
-.step-dot.active { background: var(--accent); color: white; }
-.step-dot.done { background: var(--green); color: white; }
-
-.step-line {
-  flex: 1;
-  height: 2px;
-  background: var(--border);
-  transition: background 0.3s;
-}
-
-.step-line.done { background: var(--green); }
-
-/* ─── Card ─── */
-.card {
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border-light);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s;
-}
-
-.card-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.card-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card-title .step-num {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: white;
-  font-size: 11px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.card-title .step-num.done { background: var(--green); }
-
+/* Card */
+.card { background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border-light); overflow: hidden; box-shadow: var(--shadow-sm); }
+.card-header { padding: 18px 24px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.3s; }
+.num.done { background: var(--green); }
 .card-body { padding: 20px 24px; }
 
-/* ─── Buttons ─── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border-radius: 980px;
-  border: none;
-  cursor: pointer;
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  transition: all 0.2s;
-  white-space: nowrap;
-  text-decoration: none;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: white;
-}
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 980px; border: none; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 400; transition: all 0.2s; white-space: nowrap; text-decoration: none; }
+.btn-primary { background: var(--accent); color: white; }
 .btn-primary:hover { background: var(--accent-hover); }
 .btn-primary:disabled { background: var(--border); color: var(--ink-4); cursor: not-allowed; }
-
-.btn-secondary {
-  background: var(--border-light);
-  color: var(--ink-2);
-}
+.btn-secondary { background: var(--border-light); color: var(--ink-2); }
 .btn-secondary:hover { background: var(--border); }
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--ink-2);
-}
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--ink-2); }
 .btn-outline:hover { border-color: var(--ink-3); }
+.btn-block { width: 100%; padding: 15px; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; }
+.btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-.btn-large {
-  width: 100%;
-  padding: 16px;
-  border-radius: var(--radius-sm);
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.btn-danger {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--red);
-}
-.btn-danger:hover { background: var(--red-light); }
-
-/* ─── Spinner ─── */
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: none;
-}
-
-.spinner.dark {
-  border-color: rgba(0,0,0,0.1);
-  border-top-color: var(--ink-3);
-}
-
+/* Spinner */
+.spinner { width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+.spinner.dark { border-color: rgba(0,0,0,0.1); border-top-color: var(--ink-3); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ─── Form elements ─── */
+/* Form */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-
-.form-label {
-  font-size: 12px;
-  color: var(--ink-3);
-  font-weight: 400;
-}
-
-select, textarea {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xs);
-  padding: 10px 14px;
-  color: var(--ink);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 13px;
-  font-weight: 300;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  -webkit-appearance: none;
-}
-
-select:focus, textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
-}
-
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 11px; color: var(--ink-3); }
+select, textarea, input[type="datetime-local"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 10px 14px; color: var(--ink); font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 300; outline: none; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none; }
+select:focus, textarea:focus, input[type="datetime-local"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.12); }
 textarea { resize: vertical; line-height: 1.7; }
 textarea::placeholder { color: var(--ink-4); }
 
-/* ─── Info box ─── */
-.info-box {
-  background: var(--accent-light);
-  border-radius: var(--radius-xs);
-  padding: 14px 16px;
-  font-size: 13px;
-  color: var(--accent);
-  line-height: 1.7;
-}
-
+/* Info box */
+.info-box { border-radius: var(--radius-xs); padding: 13px 16px; font-size: 13px; line-height: 1.7; }
+.info-box.blue { background: var(--accent-light); color: var(--accent); }
 .info-box.green { background: var(--green-light); color: #1a7a35; }
-.info-box.orange { background: var(--orange-light); color: #7a4500; }
+.info-box.red { background: var(--red-light); color: var(--red); }
 
-/* ─── Advice box ─── */
-.advice-box {
-  background: var(--bg);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-xs);
-  padding: 16px;
-}
+/* Advice box */
+.advice-box { background: var(--bg); border: 1px solid var(--border-light); border-radius: var(--radius-xs); padding: 14px; }
+.advice-label { font-size: 10px; color: var(--ink-4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 7px; }
+.advice-text { font-size: 13px; color: var(--ink-2); line-height: 1.8; white-space: pre-wrap; }
 
-.advice-label {
-  font-size: 11px;
-  color: var(--ink-4);
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
+/* Tag */
+.tag { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 980px; font-size: 11px; }
+.tag-blue { background: var(--accent-light); color: var(--accent); }
 
-.advice-text {
-  font-size: 13px;
-  color: var(--ink-2);
-  line-height: 1.8;
-  white-space: pre-wrap;
-}
+/* Trend */
+.trend-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.trend-col-title { font-size: 10px; color: var(--ink-4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 7px; }
+.trend-item { padding: 10px 12px; background: var(--bg); border-radius: var(--radius-xs); border: 1px solid var(--border-light); margin-bottom: 6px; }
+.trend-item-title { font-size: 12px; color: var(--ink); line-height: 1.5; margin-bottom: 3px; }
+.trend-item-summary { font-size: 11px; color: var(--ink-4); line-height: 1.5; margin-bottom: 3px; }
+.trend-item-url a { font-size: 10px; color: var(--accent); text-decoration: none; }
+.trend-empty { grid-column: 1/-1; text-align: center; padding: 24px; color: var(--ink-4); font-size: 13px; line-height: 1.8; }
+.trend-meta { font-size: 11px; color: var(--ink-4); margin-top: 10px; text-align: right; }
 
-/* ─── Upload zone ─── */
-.upload-zone {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius-sm);
-  padding: 32px 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: var(--bg);
-}
-
-.upload-zone:hover, .upload-zone.dragover {
-  border-color: var(--accent);
-  background: var(--accent-light);
-}
-
-.upload-icon { font-size: 28px; margin-bottom: 8px; }
+/* Upload */
+.upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 28px 24px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
+.upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: var(--accent-light); }
+.upload-zone.uploading { border-color: var(--orange); background: var(--orange-light); }
+.upload-zone.uploaded { border-color: var(--green); background: var(--green-light); border-style: solid; }
+.upload-icon { font-size: 26px; margin-bottom: 7px; }
 .upload-text { font-size: 13px; color: var(--ink-3); line-height: 1.7; }
 .upload-text span { color: var(--accent); cursor: pointer; }
-
-.image-preview {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.image-thumb {
-  aspect-ratio: 1;
-  border-radius: var(--radius-xs);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  position: relative;
-  cursor: pointer;
-}
-
+.upload-status { font-size: 12px; margin-top: 8px; }
+.image-preview { margin-top: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.image-thumb { aspect-ratio: 1; border-radius: var(--radius-xs); overflow: hidden; border: 1px solid var(--border); position: relative; }
 .image-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
-.image-thumb .remove {
-  position: absolute;
-  top: 4px; right: 4px;
-  width: 18px; height: 18px;
-  background: rgba(0,0,0,0.5);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 10px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+.image-thumb .remove { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; font-size: 10px; cursor: pointer; opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
 .image-thumb:hover .remove { opacity: 1; }
+.uploading-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.75); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--ink-3); }
 
-/* ─── Result sections ─── */
-.result-block {
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
+/* Result */
+.result-block { border: 1px solid var(--border-light); border-radius: var(--radius-sm); overflow: hidden; }
+.result-block + .result-block { margin-top: 10px; }
+.result-block-header { padding: 11px 16px; background: var(--bg); border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+.result-block-title { font-size: 11px; font-weight: 500; color: var(--ink-3); letter-spacing: 0.04em; text-transform: uppercase; }
+.result-block-body { padding: 16px; font-size: 13px; color: var(--ink-2); line-height: 1.9; white-space: pre-wrap; }
 
-.result-block + .result-block { margin-top: 12px; }
-
-.result-block-header {
-  padding: 12px 16px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.result-block-title {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-3);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.result-block-body {
-  padding: 16px;
-  font-size: 13px;
-  color: var(--ink-2);
-  line-height: 1.9;
-  white-space: pre-wrap;
-}
-
-/* ─── Tone adjust buttons ─── */
-.tone-btns {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-
-.tone-btn {
-  padding: 7px 14px;
-  border-radius: 980px;
-  border: 1px solid var(--border);
-  background: white;
-  color: var(--ink-2);
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: 'Noto Sans JP', sans-serif;
-}
-
+/* Tone */
+.tone-btns { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+.tone-btn { padding: 6px 13px; border-radius: 980px; border: 1px solid var(--border); background: white; color: var(--ink-2); font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: 'Noto Sans JP', sans-serif; }
 .tone-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
-/* ─── Trend items ─── */
-.trend-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.trend-col-title {
-  font-size: 11px;
-  color: var(--ink-4);
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.trend-item {
-  padding: 10px 12px;
-  background: var(--bg);
-  border-radius: var(--radius-xs);
-  border: 1px solid var(--border-light);
-  margin-bottom: 6px;
-  transition: border-color 0.2s;
-}
-
-.trend-item:hover { border-color: var(--border); }
-.trend-item-title { font-size: 12.5px; color: var(--ink); line-height: 1.5; margin-bottom: 3px; }
-.trend-item-summary { font-size: 11px; color: var(--ink-4); line-height: 1.5; }
-.trend-item-url a { font-size: 10px; color: var(--accent); text-decoration: none; }
-
-.trend-empty {
-  grid-column: 1/-1;
-  text-align: center;
-  padding: 24px;
-  color: var(--ink-4);
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-.trend-meta {
-  font-size: 11px;
-  color: var(--ink-4);
-  margin-top: 12px;
-  text-align: right;
-}
-
-/* ─── Divider ─── */
-.divider {
-  height: 1px;
-  background: var(--border-light);
-  margin: 16px 0;
-}
-
-/* ─── Tag ─── */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 10px;
-  border-radius: 980px;
-  font-size: 11px;
-  font-weight: 400;
-}
-
-.tag-blue { background: var(--accent-light); color: var(--accent); }
-.tag-green { background: var(--green-light); color: #1a7a35; }
-
-/* ─── Char count ─── */
-.char-count {
-  font-size: 11px;
-  color: var(--ink-4);
-  text-align: right;
-  margin-top: 4px;
-}
-
+/* Misc */
+.char-count { font-size: 11px; color: var(--ink-4); }
 .char-count.over { color: var(--red); }
-
-/* ─── Toast ─── */
-.toast {
-  position: fixed;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  background: var(--ink);
-  color: white;
-  padding: 12px 22px;
-  border-radius: 980px;
-  font-size: 13px;
-  opacity: 0;
-  transition: all 0.3s;
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 999;
-}
-
+.toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--ink); color: white; padding: 11px 20px; border-radius: 980px; font-size: 13px; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; z-index: 999; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ─── Section gap ─── */
-.section-gap { height: 8px; }
-
-/* ─── Responsive ─── */
 @media (max-width: 640px) {
   header { padding: 0 20px; }
   main { padding: 24px 16px 80px; }
   .form-row { grid-template-columns: 1fr; }
   .trend-grid { grid-template-columns: 1fr; }
   .image-preview { grid-template-columns: repeat(3, 1fr); }
+  .btn-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -539,16 +149,15 @@ textarea::placeholder { color: var(--ink-4); }
 
 <header>
   <div class="logo">GINZA ROSSO <span>福岡店</span></div>
-  <div class="header-step" id="headerStep">投稿ダッシュボード</div>
 </header>
 
 <main>
 
   <!-- ① トレンド取得 -->
-  <div class="card" id="cardTrend">
+  <div class="card">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num">1</div>
+        <div class="num" id="num1">1</div>
         トレンド取得・分析
       </div>
       <button class="btn btn-secondary" id="trendBtn" onclick="runAnalysis()">
@@ -558,34 +167,30 @@ textarea::placeholder { color: var(--ink-4); }
     </div>
     <div class="card-body">
       <div class="trend-grid" id="trendGrid">
-        <div class="trend-empty">
-          ボタンを押すとTavilyが最新トレンドを<br>リサーチします
-        </div>
+        <div class="trend-empty">ボタンを押すとTavilyが最新トレンドを<br>リサーチします</div>
       </div>
       <div class="trend-meta" id="trendMeta"></div>
     </div>
   </div>
 
-  <!-- ①-b Instagram分析アドバイス（取得後に表示） -->
-  <div class="card" id="instagramAdviceBox" style="display:none">
+  <!-- 先週の分析（取得後に表示） -->
+  <div class="card" id="cardInstagram" style="display:none">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num done">✓</div>
+        <div class="num done">✓</div>
         先週の分析
       </div>
     </div>
     <div class="card-body">
-      <div class="info-box green">
-        <div class="advice-text" id="instagramAdviceText"></div>
-      </div>
+      <div class="info-box green" id="instagramAdviceText"></div>
     </div>
   </div>
 
-  <!-- ② 施術メニュー入力 + 素材指示ボタン -->
-  <div class="card" id="cardInput">
+  <!-- ② 施術メニュー -->
+  <div class="card">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num">2</div>
+        <div class="num" id="num2">2</div>
         施術メニューを選ぶ
       </div>
       <button class="btn btn-secondary" id="adviseBtn" onclick="runAdvise()">
@@ -620,17 +225,17 @@ textarea::placeholder { color: var(--ink-4); }
     </div>
   </div>
 
-  <!-- ③ 素材指示（advise後に表示） -->
+  <!-- ③ 素材指示 -->
   <div class="card" id="cardMaterial" style="display:none">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num done">✓</div>
+        <div class="num done">✓</div>
         素材指示
       </div>
       <div class="tag tag-blue" id="postTypeTag"></div>
     </div>
     <div class="card-body">
-      <div class="info-box" id="postTypeReasonBox" style="margin-bottom:14px"></div>
+      <div class="info-box blue" id="postTypeReasonBox" style="margin-bottom:13px"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="advice-box">
           <div class="advice-label">📷 撮ってほしい素材</div>
@@ -641,29 +246,28 @@ textarea::placeholder { color: var(--ink-4); }
           <div class="advice-text" id="canvaAdviceText"></div>
         </div>
       </div>
-      <div style="margin-top:14px">
-        <a class="btn btn-primary btn-large" href="https://www.canva.com" target="_blank" rel="noopener">
-          Canvaで編集する →
-        </a>
+      <div style="margin-top:13px">
+        <a class="btn btn-primary btn-block" href="https://www.canva.com" target="_blank" rel="noopener">Canvaで編集する →</a>
       </div>
     </div>
   </div>
 
-  <!-- ④ 画像アップロード（Canva編集後） -->
-  <div class="card" id="cardUpload">
+  <!-- ④ 画像アップロード -->
+  <div class="card">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num">3</div>
+        <div class="num" id="num3">3</div>
         編集した画像をアップロード
       </div>
     </div>
     <div class="card-body">
       <div class="upload-zone" id="uploadZone">
-        <div class="upload-icon">🖼</div>
+        <div class="upload-icon" id="uploadIcon">🖼</div>
         <div class="upload-text">
           Canvaで編集した画像をここにドロップ<br>
           または<span onclick="document.getElementById('fileInput').click()">クリックして選択</span>
         </div>
+        <div class="upload-status" id="uploadStatus"></div>
         <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFileSelect(event)">
       </div>
       <div class="image-preview" id="imagePreview"></div>
@@ -671,7 +275,7 @@ textarea::placeholder { color: var(--ink-4); }
   </div>
 
   <!-- ⑤ 生成ボタン -->
-  <button class="btn btn-primary btn-large" id="genBtn" onclick="generateContent()" style="border-radius:var(--radius-sm)">
+  <button class="btn btn-primary btn-block" id="genBtn" onclick="generateContent()" style="border-radius:var(--radius-sm)">
     <div class="spinner" id="genSpinner"></div>
     <span id="genBtnText">投稿文を生成する</span>
   </button>
@@ -680,7 +284,7 @@ textarea::placeholder { color: var(--ink-4); }
   <div class="card" id="cardResult" style="display:none">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num done">✓</div>
+        <div class="num done">✓</div>
         生成された投稿文
       </div>
     </div>
@@ -702,7 +306,7 @@ textarea::placeholder { color: var(--ink-4); }
         </div>
         <div class="result-block-body" id="storyText"></div>
       </div>
-      <div style="margin-top:16px">
+      <div style="margin-top:14px">
         <div class="form-label" style="margin-bottom:8px">トーンを調整する</div>
         <div class="tone-btns">
           <button class="tone-btn" onclick="regenerate('もっと専門的・教育的なトーンに')">もっと専門的に</button>
@@ -718,35 +322,27 @@ textarea::placeholder { color: var(--ink-4); }
   <div class="card" id="cardPost" style="display:none">
     <div class="card-header">
       <div class="card-title">
-        <div class="step-num">4</div>
+        <div class="num">4</div>
         Instagramに投稿
       </div>
     </div>
     <div class="card-body">
-
-      <!-- 予約日時（任意） -->
-      <div class="form-group" style="margin-bottom:14px">
+      <div class="form-group" style="margin-bottom:13px">
         <div class="form-label">予約投稿日時（空欄なら即時投稿）</div>
-        <input type="datetime-local" id="scheduleTime"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 14px;color:var(--ink);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;">
-        <div style="font-size:11px;color:var(--ink-4);margin-top:5px">※ 10分後〜30日以内で指定してください</div>
+        <input type="datetime-local" id="scheduleTime">
+        <div style="font-size:11px;color:var(--ink-4);margin-top:4px">※ 10分後〜30日以内で指定してください</div>
       </div>
-
-      <!-- 投稿ボタン -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <button class="btn btn-primary btn-large" id="postNowBtn" onclick="postToInstagram(false)">
+      <div class="btn-grid">
+        <button class="btn btn-primary btn-block" id="postNowBtn" onclick="postToInstagram(false)">
           <div class="spinner" id="postNowSpinner"></div>
           <span id="postNowText">今すぐ投稿する</span>
         </button>
-        <button class="btn btn-outline btn-large" id="postScheduleBtn" onclick="postToInstagram(true)">
+        <button class="btn btn-outline btn-block" id="postScheduleBtn" onclick="postToInstagram(true)">
           <div class="spinner dark" id="postScheduleSpinner"></div>
           <span id="postScheduleText">予約投稿する</span>
         </button>
       </div>
-
-      <!-- 投稿結果 -->
-      <div id="postResultBox" style="display:none;margin-top:14px"></div>
-
+      <div id="postResultBox" style="display:none;margin-top:13px"></div>
     </div>
   </div>
 
@@ -755,14 +351,12 @@ textarea::placeholder { color: var(--ink-4); }
 <div class="toast" id="toast"></div>
 
 <script>
-let images = [];
-let trendData = null;
+let trendData       = null;
 let instagramAdvice = null;
-let adviseData = null;
+let adviseData      = null;
+let uploadedImages  = []; // { src, cloudinaryUrl, uploading, error }
 
-// ─────────────────────────────────────────
-// ① トレンド取得 + Instagram分析（並列）
-// ─────────────────────────────────────────
+// ① トレンド + Instagram分析
 async function runAnalysis() {
   const btn = document.getElementById('trendBtn');
   const sp  = document.getElementById('trendSpinner');
@@ -772,314 +366,234 @@ async function runAnalysis() {
 
   try {
     const [trendRes, instaRes] = await Promise.allSettled([
-      fetch('/api/trend',     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) }),
-      fetch('/api/instagram', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) }),
+      fetch('/api/trend',     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
+      fetch('/api/instagram', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
     ]);
 
-    // トレンド
     if (trendRes.status === 'fulfilled' && trendRes.value.ok) {
-      const data = await trendRes.value.json();
-      trendData = data;
-      renderTrend(data);
+      trendData = await trendRes.value.json();
+      renderTrend(trendData);
     } else {
       document.getElementById('trendGrid').innerHTML = '<div class="trend-empty">トレンド取得に失敗しました</div>';
     }
 
-    // Instagram分析
     if (instaRes.status === 'fulfilled' && instaRes.value.ok) {
-      const data = await instaRes.value.json();
-      instagramAdvice = data.advice;
+      const d = await instaRes.value.json();
+      instagramAdvice = d.advice;
       if (instagramAdvice) {
         document.getElementById('instagramAdviceText').textContent = instagramAdvice;
-        document.getElementById('instagramAdviceBox').style.display = 'block';
+        document.getElementById('cardInstagram').style.display = 'block';
       }
     }
 
+    setDone('num1');
     toast('✓ トレンド・分析を取得しました');
   } catch(e) {
-    console.error(e);
     toast('取得に失敗しました: ' + e.message);
   }
-
   btn.disabled = false; sp.style.display = 'none'; txt.textContent = '再取得する';
 }
 
 function renderTrend(data) {
   const { sections = [] } = data;
-  if (!sections.length) {
-    document.getElementById('trendGrid').innerHTML = '<div class="trend-empty">結果が取得できませんでした</div>';
-    return;
-  }
+  if (!sections.length) { document.getElementById('trendGrid').innerHTML = '<div class="trend-empty">結果が取得できませんでした</div>'; return; }
   document.getElementById('trendGrid').innerHTML = sections.map(sec => `
     <div>
       <div class="trend-col-title">${esc(sec.label)}</div>
-      ${(sec.results || []).map(item => `
+      ${(sec.results||[]).map(item=>`
         <div class="trend-item">
           <div class="trend-item-title">${esc(item.title)}</div>
           <div class="trend-item-summary">${esc(item.summary)}</div>
           <div class="trend-item-url"><a href="${esc(item.url)}" target="_blank" rel="noopener">詳細を見る</a></div>
         </div>`).join('')}
     </div>`).join('');
-
   const now = new Date();
-  document.getElementById('trendMeta').textContent =
-    `取得：${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('trendMeta').textContent = `取得：${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
 }
 
-// ─────────────────────────────────────────
-// ② 素材指示を先に出す（Canva編集前）
-// ─────────────────────────────────────────
+// ② 素材指示
 async function runAdvise() {
   const btn = document.getElementById('adviseBtn');
   const sp  = document.getElementById('adviseSpinner');
   const txt = document.getElementById('adviseBtnText');
   btn.disabled = true; sp.style.display = 'block'; txt.textContent = '考え中...';
 
-  const payload = {
-    menu:            document.getElementById('menuType').value,
-    voice:           document.getElementById('voiceInput').value || 'なし',
-    extra:           document.getElementById('extraInput').value || 'なし',
-    trendData:       trendData,
-    instagramAdvice: instagramAdvice,
-  };
-
   try {
     const r = await fetch('/api/advise', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        menu:  document.getElementById('menuType').value,
+        voice: document.getElementById('voiceInput').value || 'なし',
+        extra: document.getElementById('extraInput').value || 'なし',
+        trendData, instagramAdvice,
+      })
     });
-
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      throw new Error(e.error || `HTTPエラー: ${r.status}`);
-    }
-
+    if (!r.ok) throw new Error((await r.json().catch(()=>({}))).error || 'エラー');
     const data = await r.json();
     adviseData = data;
-
-    // 素材指示カードを表示
-    document.getElementById('cardMaterial').style.display = 'block';
-    document.getElementById('postTypeTag').textContent     = data.postType || '';
-    document.getElementById('postTypeReasonBox').textContent = data.postTypeReason || '';
-    document.getElementById('materialAdviceText').textContent = data.materialAdvice || '';
-    document.getElementById('canvaAdviceText').textContent    = data.canvaAdvice || '';
-
+    document.getElementById('cardMaterial').style.display        = 'block';
+    document.getElementById('postTypeTag').textContent           = data.postType || '';
+    document.getElementById('postTypeReasonBox').textContent     = data.postTypeReason || '';
+    document.getElementById('materialAdviceText').textContent    = data.materialAdvice || '';
+    document.getElementById('canvaAdviceText').textContent       = data.canvaAdvice || '';
+    setDone('num2');
     document.getElementById('cardMaterial').scrollIntoView({ behavior: 'smooth', block: 'start' });
     toast('✓ 素材指示を生成しました');
-  } catch(e) {
-    console.error(e);
-    toast('失敗しました: ' + e.message);
-  }
-
+  } catch(e) { toast('失敗しました: ' + e.message); }
   btn.disabled = false; sp.style.display = 'none'; txt.textContent = '素材指示を出す';
 }
 
-// ─────────────────────────────────────────
-// ファイルアップロード → 即座にCloudinaryへ
-// ─────────────────────────────────────────
+// ④ 画像アップロード → Cloudinaryへ即送信
 const zone = document.getElementById('uploadZone');
 zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
 zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
 zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); addFiles([...e.dataTransfer.files]); });
 function handleFileSelect(e) { addFiles([...e.target.files]); }
+
 function addFiles(files) {
   files.filter(f => f.type.startsWith('image/')).forEach(f => {
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = async (e) => {
       const src = e.target.result;
-      images.push({ id: Date.now()+Math.random(), src, cloudinaryUrl: null });
-      renderImages();
-      // Cloudinaryに即アップロード
-      uploadToCloudinary(src, images.length - 1);
+      const idx = uploadedImages.length;
+      uploadedImages.push({ src, cloudinaryUrl: null, uploading: true });
+      renderImages(); updateUploadZone();
+
+      try {
+        const r = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageData: src }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || 'アップロード失敗');
+        uploadedImages[idx].cloudinaryUrl = data.url;
+        uploadedImages[idx].uploading = false;
+        toast('✓ 画像をアップロードしました');
+      } catch(err) {
+        uploadedImages[idx].uploading = false;
+        uploadedImages[idx].error = err.message;
+        toast('画像アップロード失敗: ' + err.message);
+      }
+      renderImages(); updateUploadZone();
     };
     reader.readAsDataURL(f);
   });
 }
 
-async function uploadToCloudinary(base64, index) {
-  try {
-    const r = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageData: base64 }),
-    });
-    if (r.ok) {
-      const data = await r.json();
-      images[index].cloudinaryUrl = data.url;
-      renderImages();
-      toast('✓ 画像をアップロードしました');
-    }
-  } catch(e) {
-    console.error('Cloudinaryアップロード失敗:', e);
-  }
-}
-
 function renderImages() {
-  document.getElementById('imagePreview').innerHTML = images.map((img, i) => `
+  document.getElementById('imagePreview').innerHTML = uploadedImages.map((img, i) => `
     <div class="image-thumb">
       <img src="${img.src}">
-      ${img.cloudinaryUrl ? '<div style="position:absolute;bottom:4px;left:4px;background:var(--green);border-radius:4px;width:8px;height:8px"></div>' : ''}
-      <button class="remove" onclick="images.splice(${i},1);renderImages()">✕</button>
+      ${img.uploading ? '<div class="uploading-overlay">アップ中...</div>' : ''}
+      <button class="remove" onclick="uploadedImages.splice(${i},1);renderImages();updateUploadZone()">✕</button>
     </div>`).join('');
 }
 
-// ─────────────────────────────────────────
-// ③ 投稿文 + ストーリーズ生成
-// ─────────────────────────────────────────
+function updateUploadZone() {
+  const z = document.getElementById('uploadZone');
+  const icon   = document.getElementById('uploadIcon');
+  const status = document.getElementById('uploadStatus');
+  const uploading = uploadedImages.some(i => i.uploading);
+  const done = uploadedImages.length > 0 && !uploading;
+  z.className = 'upload-zone' + (uploading ? ' uploading' : done ? ' uploaded' : '');
+  if (uploading) {
+    icon.textContent = '⏳'; status.textContent = 'Cloudinaryにアップロード中...'; status.style.color = 'var(--orange)';
+  } else if (done) {
+    icon.textContent = '✅'; status.textContent = `${uploadedImages.length}枚アップロード済み`; status.style.color = 'var(--green)';
+    setDone('num3');
+  } else {
+    icon.textContent = '🖼'; status.textContent = '';
+    document.getElementById('num3').textContent = '3'; document.getElementById('num3').classList.remove('done');
+  }
+}
+
+// ⑤ 投稿文生成
 async function generateContent(tone = null) {
   const btn = document.getElementById('genBtn');
   const sp  = document.getElementById('genSpinner');
   const txt = document.getElementById('genBtnText');
   btn.disabled = true; sp.style.display = 'block'; txt.textContent = '生成中...';
 
-  const payload = {
-    menu:            document.getElementById('menuType').value,
-    voice:           document.getElementById('voiceInput').value || 'なし',
-    extra:           document.getElementById('extraInput').value || 'なし',
-    trendData:       trendData,
-    instagramAdvice: instagramAdvice,
-    // adviseで決まった投稿タイプをそのまま渡す
-    postType:        adviseData?.postType || null,
-    tone:            tone,
-  };
-
   try {
     const r = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        menu:  document.getElementById('menuType').value,
+        voice: document.getElementById('voiceInput').value || 'なし',
+        extra: document.getElementById('extraInput').value || 'なし',
+        trendData, instagramAdvice,
+        postType: adviseData?.postType || null,
+        tone,
+      })
     });
-
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      throw new Error(e.error || `HTTPエラー: ${r.status}`);
-    }
-
+    if (!r.ok) throw new Error((await r.json().catch(()=>({}))).error || `HTTPエラー: ${r.status}`);
     const data = await r.json();
-
-    // 生成結果を表示
     document.getElementById('cardResult').style.display = 'block';
     document.getElementById('postText').textContent  = data.post  || '';
     document.getElementById('storyText').textContent = data.story || '';
-
-    const len = (data.story || '').length;
+    const len = (data.story||'').length;
     const cc = document.getElementById('storyCharCount');
-    cc.textContent = `${len}文字`;
-    cc.className = 'char-count' + (len > 100 ? ' over' : '');
-
+    cc.textContent = `${len}文字`; cc.className = 'char-count' + (len > 100 ? ' over' : '');
     document.getElementById('cardPost').style.display = 'block';
     document.getElementById('cardResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
     toast('✓ 生成完了！');
-  } catch(e) {
-    console.error(e);
-    toast('生成に失敗しました: ' + e.message);
-  }
-
+  } catch(e) { toast('生成に失敗しました: ' + e.message); }
   btn.disabled = false; sp.style.display = 'none'; txt.textContent = '投稿文を生成する';
 }
 
-async function regenerate(tone) {
-  await generateContent(tone);
-}
+async function regenerate(tone) { await generateContent(tone); }
 
-// ─────────────────────────────────────────
-// ⑦ Instagram投稿（即時 or 予約）
-// ─────────────────────────────────────────
+// ⑦ Instagram投稿
 async function postToInstagram(isScheduled) {
-  // 画像チェック
-  if (!images.length) {
-    toast('画像をアップロードしてください');
-    return;
-  }
+  if (!uploadedImages.length) { toast('画像をアップロードしてください'); return; }
+  if (uploadedImages.some(i => i.uploading)) { toast('アップロード中です。少し待ってください'); return; }
+  if (!uploadedImages[0].cloudinaryUrl) { toast('画像のアップロードに失敗しています。再度アップロードしてください'); return; }
 
-  // 投稿文チェック
   const caption = document.getElementById('postText').textContent;
-  if (!caption) {
-    toast('先に投稿文を生成してください');
-    return;
-  }
+  if (!caption) { toast('先に投稿文を生成してください'); return; }
 
-  // 予約の場合は日時チェック
   const scheduleInput = document.getElementById('scheduleTime').value;
-  if (isScheduled && !scheduleInput) {
-    toast('予約日時を入力してください');
-    return;
-  }
+  if (isScheduled && !scheduleInput) { toast('予約日時を入力してください'); return; }
 
   const nowBtn = document.getElementById('postNowBtn');
   const schBtn = document.getElementById('postScheduleBtn');
-  const activeBtn = isScheduled ? schBtn : nowBtn;
-  const activeSpinner = document.getElementById(isScheduled ? 'postScheduleSpinner' : 'postNowSpinner');
-  const activeText = document.getElementById(isScheduled ? 'postScheduleText' : 'postNowText');
+  nowBtn.disabled = true; schBtn.disabled = true;
+  const sp  = document.getElementById(isScheduled ? 'postScheduleSpinner' : 'postNowSpinner');
+  const txt = document.getElementById(isScheduled ? 'postScheduleText'    : 'postNowText');
+  sp.style.display = 'block'; txt.textContent = isScheduled ? '予約中...' : '投稿中...';
 
-  activeBtn.disabled = true;
-  nowBtn.disabled = true;
-  schBtn.disabled = true;
-  activeSpinner.style.display = 'block';
-  activeText.textContent = isScheduled ? '予約中...' : '投稿中...';
-
-  // UNIXタイムスタンプに変換
-  const scheduledTime = isScheduled
-    ? Math.floor(new Date(scheduleInput).getTime() / 1000)
-    : null;
-
-  const payload = {
-    imageUrl:      images[0].cloudinaryUrl, // CloudinaryのURLを直接渡す
-    caption:       caption,
-    scheduledTime: scheduledTime,
-  };
+  const scheduledTime = isScheduled ? Math.floor(new Date(scheduleInput).getTime() / 1000) : null;
 
   try {
     const r = await fetch('/api/post', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ imageUrl: uploadedImages[0].cloudinaryUrl, caption, scheduledTime })
     });
-
     const data = await r.json();
-
     if (!r.ok) throw new Error(data.error || `HTTPエラー: ${r.status}`);
-
-    // 結果表示
     const box = document.getElementById('postResultBox');
     box.style.display = 'block';
     box.innerHTML = `<div class="info-box green">${esc(data.message)}</div>`;
     toast(data.type === 'scheduled' ? '✓ 予約投稿を設定しました！' : '✓ Instagramに投稿しました！');
-
   } catch(e) {
-    console.error(e);
     const box = document.getElementById('postResultBox');
     box.style.display = 'block';
-    box.innerHTML = `<div class="info-box" style="background:var(--red-light);color:var(--red)">エラー：${esc(e.message)}</div>`;
+    box.innerHTML = `<div class="info-box red">エラー：${esc(e.message)}</div>`;
     toast('投稿に失敗しました');
   }
-
-  activeSpinner.style.display = 'none';
-  activeText.textContent = isScheduled ? '予約投稿する' : '今すぐ投稿する';
-  nowBtn.disabled = false;
-  schBtn.disabled = false;
-  activeBtn.disabled = false;
+  sp.style.display = 'none'; txt.textContent = isScheduled ? '予約投稿する' : '今すぐ投稿する';
+  nowBtn.disabled = false; schBtn.disabled = false;
 }
 
-// ─────────────────────────────────────────
 // ユーティリティ
-// ─────────────────────────────────────────
-function copyText(id) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => toast('✓ コピーしました'));
-}
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+function setDone(id) { const el = document.getElementById(id); el.textContent = '✓'; el.classList.add('done'); }
+function copyText(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => toast('✓ コピーしました')); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 </script>
 </body>
 </html>
