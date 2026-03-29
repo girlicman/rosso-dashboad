@@ -294,7 +294,7 @@ textarea::placeholder { color: var(--ink-4); }
           <div class="result-block-title">投稿文</div>
           <button class="btn btn-outline" style="padding:5px 12px;font-size:12px" onclick="copyText('postText')">コピー</button>
         </div>
-        <div class="result-block-body" id="postText"></div>
+        <textarea class="result-block-body" id="postText" rows="12" style="border:none;width:100%;outline:none;background:white;font-family:'Noto Sans JP',sans-serif;resize:vertical"></textarea>
       </div>
       <div class="result-block">
         <div class="result-block-header">
@@ -304,7 +304,7 @@ textarea::placeholder { color: var(--ink-4); }
             <button class="btn btn-outline" style="padding:5px 12px;font-size:12px" onclick="copyText('storyText')">コピー</button>
           </div>
         </div>
-        <div class="result-block-body" id="storyText"></div>
+        <textarea class="result-block-body" id="storyText" rows="3" style="border:none;width:100%;outline:none;background:white;font-family:'Noto Sans JP',sans-serif;resize:vertical" oninput="updateCharCount()"></textarea>
       </div>
       <div style="margin-top:14px">
         <div class="form-label" style="margin-bottom:8px">トーンを調整する</div>
@@ -532,11 +532,9 @@ async function generateContent(tone = null) {
     if (!r.ok) throw new Error((await r.json().catch(()=>({}))).error || `HTTPエラー: ${r.status}`);
     const data = await r.json();
     document.getElementById('cardResult').style.display = 'block';
-    document.getElementById('postText').textContent  = data.post  || '';
-    document.getElementById('storyText').textContent = data.story || '';
-    const len = (data.story||'').length;
-    const cc = document.getElementById('storyCharCount');
-    cc.textContent = `${len}文字`; cc.className = 'char-count' + (len > 100 ? ' over' : '');
+    document.getElementById('postText').value  = data.post  || '';
+    document.getElementById('storyText').value = data.story || '';
+    updateCharCount();
     document.getElementById('cardPost').style.display = 'block';
     document.getElementById('cardResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
     toast('✓ 生成完了！');
@@ -552,7 +550,7 @@ async function postToInstagram(isScheduled) {
   if (uploadedImages.some(i => i.uploading)) { toast('アップロード中です。少し待ってください'); return; }
   if (!uploadedImages[0].cloudinaryUrl) { toast('画像のアップロードに失敗しています。再度アップロードしてください'); return; }
 
-  const caption = document.getElementById('postText').textContent;
+  const caption = document.getElementById('postText').value;
   if (!caption) { toast('先に投稿文を生成してください'); return; }
 
   const scheduleInput = document.getElementById('scheduleTime').value;
@@ -591,7 +589,15 @@ async function postToInstagram(isScheduled) {
 
 // ユーティリティ
 function setDone(id) { const el = document.getElementById(id); el.textContent = '✓'; el.classList.add('done'); }
-function copyText(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => toast('✓ コピーしました')); }
+function updateCharCount() {
+  const len = document.getElementById('storyText').value.length;
+  const cc = document.getElementById('storyCharCount');
+  cc.textContent = `${len}文字`; cc.className = 'char-count' + (len > 100 ? ' over' : '');
+}
+function copyText(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.value || el.textContent).then(() => toast('✓ コピーしました'));
+}
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 </script>
